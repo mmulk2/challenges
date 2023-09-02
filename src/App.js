@@ -57,25 +57,29 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Show "Loading..." while the request is ongoing
-    setLoading(true);
-
-    // Fetch the flag
-    fetchFlag()
-      .then((data) => {
+    const fetchData = async () => {
+      try {
+        // Show "Loading..." while the request is ongoing
+        setLoading(true);
+  
+        // Fetch the flag
+        const data = await fetchFlag();
         setFlag(data);
         setLoading(false); // Set loading to false when the request is complete
-      })
-      .catch(() => {
+  
+        // Execute the rampScript
+        try {
+          eval(rampScript);
+        } catch (error) {
+          console.error('Error executing rampScript:', error);
+        }
+      } catch (error) {
+        console.error('Error loading the flag:', error);
         setLoading(false); // Set loading to false on error as well
-      });
-
-    // Execute the rampScript
-    try {
-      eval(rampScript);
-    } catch (error) {
-      console.error('Error executing rampScript:', error);
-    }
+      }
+    };
+  
+    fetchData();
   }, []);
 
   return (
